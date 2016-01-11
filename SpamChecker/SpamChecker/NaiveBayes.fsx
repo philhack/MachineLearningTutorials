@@ -88,6 +88,37 @@ spam |> top 20 casedTokenizer |> Seq.iter (printfn "%s")
 let commonTokens = Set.intersect topHam topSpam
 let specificTokens = Set.difference topTokens commonTokens
 
+let rareTokens n (tokenizer:Tokenizer) (docs:string []) =
+    let tokenized = docs |> Array.map tokenizer
+    let tokens = tokenized |> Set.unionMany
+    tokens
+    |> Seq.sortBy (fun t -> countIn tokenized t)
+    |> Seq.take n
+    |> Set.ofSeq
+
+let rareHam = ham |> rareTokens 50 casedTokenizer |> Seq.iter (printfn "%s")
+let rareSpam = spam |> rareTokens 50 casedTokenizer |> Seq.iter (printfn "%s")
+
+let phoneWords = Regex(@"0[7-9]\d{9}")
+
+// convert to __PHONE__ token when the regex matches
+let phone (text:string) = 
+    match (phoneWords.IsMatch text) with
+    | true -> "__PHONE__"
+    | false -> text
+
+let txtCode = Regex(@"\b\d{5}\b")
+let txt (text:string) = 
+    match(txtCode.IsMatch text) with
+    | true -> "__TXT__"
+    | false -> text
+
+let smartTokenizer = casedTokenizer >> Set.map phone >> Set.map txt
+
+let smartTokens = 
+    specificTokens
+    |> Set.add "__TXT__"
+    |> Set.add "__PHONE__"
 
 validation 
     |> Seq.averageBy (fun (docType, sms) ->
@@ -105,3 +136,6 @@ evaluate casedTokenizer topTokens;;
 
 printfn "cased: specific tokens"
 evaluate casedTokenizer specificTokens
+
+printfn "smart: smart tokens"
+evaluate smartTokenizer smartTokens
