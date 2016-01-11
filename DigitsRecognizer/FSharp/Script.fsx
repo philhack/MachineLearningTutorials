@@ -15,5 +15,11 @@ let reader path =
     data.[1..]
     |> Array.map toObservation
 
+let manhattanDistance (pixels1, pixels2) =
+    Array.zip pixels1, pixels2
+    |>  Array.map (fun (x,y) -> abs(x-y))
+    |> Array.sum
+
 let trainingPath = @"C:\dev\InnovationDay\MachineLearning\DigitsRecognizer\Data\trainingsample.csv"
 let trainingData = reader trainingPath
+
