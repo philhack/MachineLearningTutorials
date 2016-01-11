@@ -4,6 +4,7 @@ open System.IO
 
 type Observation = { Label:string; Pixels: int[] }
 type Distance = int[] * int[] -> int
+type Classifier = int[] -> string
 //type Distance = int[] * int[] -> int
 
 let toObservation (csvData:string) =
@@ -17,9 +18,9 @@ let reader path =
     data.[1..]
     |> Array.map toObservation
 
-let manhattanDistance (pixels1, pixels2) =
-    Array.zip pixels1, pixels2
-    |>  Array.map (fun (x,y) -> abs(x-y))
+let manhattanDistance (pixels1,pixels2) =
+    Array.zip pixels1 pixels2
+    |> Array.map (fun (x,y) -> abs (x-y))
     |> Array.sum
 
 let train (trainingset:Observation[]) (dist:Distance) = 
@@ -34,5 +35,14 @@ let trainingData = reader trainingPath
 
 let classifier = train trainingData
 
+let validationPath = @"C:\dev\InnovationDay\MachineLearning\DigitsRecognizer\Data\validationsample.csv"
+let validationData = reader validationPath
 
+let manhattanModel = train trainingData manhattanDistance
 
+let evaluate validationSet classifer =
+    validationSet
+    |> Array.averageBy (fun x -> if classifer x.Pixels = x.Label then 1. else 0.)
+    |> printfn "Correct: %.3f"
+
+//evaluate validationData manhattanModel

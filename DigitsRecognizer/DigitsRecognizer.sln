@@ -5,6 +5,12 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp", "FSharp\FSharp.fsproj", "{50FB4FFB-D5C7-4849-93A7-8AC93D783AC0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2661E48D-5176-4AD3-A07C-5FE97DEA255B}"
+	ProjectSection(SolutionItems) = preProject
+		Data\trainingsample.csv = Data\trainingsample.csv
+		Data\validationsample.csv = Data\validationsample.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
