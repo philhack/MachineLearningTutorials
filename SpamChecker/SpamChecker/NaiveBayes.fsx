@@ -139,3 +139,21 @@ evaluate casedTokenizer specificTokens
 
 printfn "smart: smart tokens"
 evaluate smartTokenizer smartTokens
+
+
+// copy/paste from the book:  Error by class
+let bestClassifier = train training smartTokenizer smartTokens
+validation
+|> Seq.filter (fun (docType,_) -> docType = Ham)
+|> Seq.averageBy (fun (docType,sms) ->
+    if docType = bestClassifier sms
+    then 1.0
+    else 0.0)
+|> printfn "Properly classified Ham: %.5f"
+validation
+|> Seq.filter (fun (docType,_) -> docType = Spam)
+|> Seq.averageBy (fun (docType,sms) ->
+    if docType = bestClassifier sms
+    then 1.0
+    else 0.0)
+|> printfn "Properly classified Spam: %.5f"
