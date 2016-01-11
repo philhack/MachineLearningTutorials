@@ -47,6 +47,14 @@ let allTokens =
     |> Seq.map snd 
     |> vocabulary wordTokenizer
 
+
+let evaluate (tokenizer:Tokenizer) (tokens:Token Set) = 
+        let classifier = train training tokenizer tokens
+        validation
+        |> Seq.averageBy (fun (docType, sms) ->
+            if docType = classifier sms then 1.0 else 0.0)
+        |> printfn "Correctly classified: %.3f"
+
 let txtClassifier = train training wordTokenizer (["txt"] |> set)
 let fullClassifier = train training wordTokenizer allTokens
 
@@ -54,3 +62,5 @@ validation
     |> Seq.averageBy (fun (docType, sms) ->
         if docType = fullClassifier sms then 1.0 else 0.0)
     |> printfn "Based on 'txt', correctly classified: %.3f"
+
+evaluate wordTokenizer allTokens;;
