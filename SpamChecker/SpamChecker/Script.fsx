@@ -29,3 +29,16 @@ let path = __SOURCE_DIRECTORY__ + @"..\..\Data\" + fileName
 let dataset = 
     File.ReadAllLines path
     |> Array.map parseLine
+
+let spamWithFREE = 
+    dataset
+    |> Array.filter (fun (docType,_) -> docType = Spam)
+    |> Array.filter (fun (_,sms) -> sms.Contains("FREE"))
+    |> Array.length
+
+
+let hamWithFREE =
+    dataset
+    |> Array.filter (fun (docType, _) -> docType = Ham)
+    |> Array.filter (fun (_, sms) -> sms.Contains("FREE"))
+    |> Array.length
