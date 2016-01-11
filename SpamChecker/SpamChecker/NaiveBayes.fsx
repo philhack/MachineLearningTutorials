@@ -82,6 +82,13 @@ let topTokens = Set.union topHam topSpam
 let txtClassifier = train training wordTokenizer (["txt"] |> set)
 let fullClassifier = train training wordTokenizer allTokens
 
+ham |> top 20 casedTokenizer |> Seq.iter (printfn "%s")
+spam |> top 20 casedTokenizer |> Seq.iter (printfn "%s")
+
+let commonTokens = Set.intersect topHam topSpam
+let specificTokens = Set.difference topTokens commonTokens
+
+
 validation 
     |> Seq.averageBy (fun (docType, sms) ->
         if docType = fullClassifier sms then 1.0 else 0.0)
@@ -95,3 +102,6 @@ evaluate casedTokenizer casedTokens;;
 
 printfn "cased: top tokens"
 evaluate casedTokenizer topTokens;;
+
+printfn "cased: specific tokens"
+evaluate casedTokenizer specificTokens
