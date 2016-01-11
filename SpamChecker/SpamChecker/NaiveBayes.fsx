@@ -64,6 +64,21 @@ let evaluate (tokenizer:Tokenizer) (tokens:Token Set) =
             if docType = classifier sms then 1.0 else 0.0)
         |> printfn "Correctly classified: %.3f"
 
+
+let ham, spam = 
+    let rawHam, rawSpam =
+        training
+        |> Array.partition (fun (lbl,_) -> lbl=Ham)
+    rawHam |> Array.map snd,
+    rawSpam |> Array.map snd
+
+let hamCount = ham |> vocabulary casedTokenizer |> Set.count
+let spamCount = spam |> vocabulary casedTokenizer |> Set.count
+
+let topHam = ham |> top (hamCount / 10) casedTokenizer
+let topSpam = spam |> top (spamCount / 10) casedTokenizer
+let topTokens = Set.union topHam topSpam
+
 let txtClassifier = train training wordTokenizer (["txt"] |> set)
 let fullClassifier = train training wordTokenizer allTokens
 
@@ -72,5 +87,11 @@ validation
         if docType = fullClassifier sms then 1.0 else 0.0)
     |> printfn "Based on 'txt', correctly classified: %.3f"
 
+printfn "word: all tokens"
 evaluate wordTokenizer allTokens;;
+
+printfn "cased: cased tokens"
 evaluate casedTokenizer casedTokens;;
+
+printfn "cased: top tokens"
+evaluate casedTokenizer topTokens;;

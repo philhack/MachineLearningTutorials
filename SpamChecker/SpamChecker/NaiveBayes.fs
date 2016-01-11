@@ -74,4 +74,10 @@ module Classifier =
         |> Seq.map tokenizer
         |> Set.unionMany
 
-    
+    let top n (tokenizer:Tokenizer) (docs:string []) =
+        let tokenized = docs |> Array.map tokenizer
+        let tokens = tokenized |> Set.unionMany
+        tokens
+        |> Seq.sortBy (fun t -> - countIn tokenized t)
+        |> Seq.take n
+        |> Set.ofSeq
