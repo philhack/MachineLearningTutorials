@@ -42,14 +42,15 @@ open NaiveBayes.Classifier
 
 let validation, training = dataset.[..999], dataset.[1000..]
 
-let txtClassifier = train training wordTokenizer (["txt"] |> set)
-
 let allTokens = 
     training
     |> Seq.map snd 
     |> vocabulary wordTokenizer
 
+let txtClassifier = train training wordTokenizer (["txt"] |> set)
+let fullClassifier = train training wordTokenizer allTokens
+
 validation 
     |> Seq.averageBy (fun (docType, sms) ->
-        if docType = txtClassifier sms then 1.0 else 0.0)
+        if docType = fullClassifier sms then 1.0 else 0.0)
     |> printfn "Based on 'txt', correctly classified: %.3f"
