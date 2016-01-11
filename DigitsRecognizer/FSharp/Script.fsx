@@ -23,6 +23,12 @@ let manhattanDistance (pixels1,pixels2) =
     |> Array.map (fun (x,y) -> abs (x-y))
     |> Array.sum
 
+let euclideanDistance (pixels1, pixels2) = 
+    Array.zip pixels1 pixels2
+    |> Array.map(fun (x,y) -> pown (x-y) 2)
+    |> Array.sum
+    //|> sqrt
+
 let train (trainingset:Observation[]) (dist:Distance) = 
     let classify (pixels:int[]) =
         trainingset
@@ -38,11 +44,16 @@ let classifier = train trainingData
 let validationPath = @"C:\dev\InnovationDay\MachineLearning\DigitsRecognizer\Data\validationsample.csv"
 let validationData = reader validationPath
 
-let manhattanModel = train trainingData manhattanDistance
+let manhattanClassifier = train trainingData manhattanDistance
+let euclideanClassifier = train trainingData euclideanDistance
 
 let evaluate validationSet classifer =
     validationSet
     |> Array.averageBy (fun x -> if classifer x.Pixels = x.Label then 1. else 0.)
     |> printfn "Correct: %.3f"
 
-//evaluate validationData manhattanModel
+printfn "Manhattan"
+evaluate validationData manhattanClassifier
+
+printfn "Euclidean"
+evaluate validationData euclideanClassifier
