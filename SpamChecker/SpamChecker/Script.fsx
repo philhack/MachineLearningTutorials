@@ -1,4 +1,7 @@
 ﻿open System.IO
+#load "NaiveBayes.fs"
+open NaiveBayes.Classifier
+
 
 type DocType =
     | Ham
@@ -42,3 +45,6 @@ let hamWithFREE =
     |> Array.filter (fun (docType, _) -> docType = Ham)
     |> Array.filter (fun (_, sms) -> sms.Contains("FREE"))
     |> Array.length
+
+
+Hello "World"
