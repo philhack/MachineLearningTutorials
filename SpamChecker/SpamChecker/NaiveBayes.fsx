@@ -35,7 +35,12 @@ let wordTokenizer (text:string) =
     |> Seq.map (fun m -> m.Value)
     |> Set.ofSeq
 
-
+let casedTokenizer (text:string) = 
+    text
+    |> matchWords.Matches
+    |> Seq.cast<Match>
+    |> Seq.map (fun m -> m.Value)
+    |> Set.ofSeq
 
 #load "NaiveBayes.fs"
 open NaiveBayes.Classifier
@@ -47,6 +52,10 @@ let allTokens =
     |> Seq.map snd 
     |> vocabulary wordTokenizer
 
+let casedTokens =
+    training
+    |> Seq.map snd
+    |> vocabulary casedTokenizer
 
 let evaluate (tokenizer:Tokenizer) (tokens:Token Set) = 
         let classifier = train training tokenizer tokens
@@ -64,3 +73,4 @@ validation
     |> printfn "Based on 'txt', correctly classified: %.3f"
 
 evaluate wordTokenizer allTokens;;
+evaluate casedTokenizer casedTokens;;
